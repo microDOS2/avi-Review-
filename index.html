@@ -154,16 +154,26 @@
         /* Testimonial Carousel */
         .testimonial-carousel {
             display: flex;
-            transition: transform 0.5s ease-in-out;
+            width: max-content;
+            animation: marquee 30s linear infinite;
+        }
+        .testimonial-carousel:hover {
+            animation-play-state: paused;
         }
         .testimonial-card {
-            flex: 0 0 100%;
+            width: 320px;
+            padding: 0 1rem;
             box-sizing: border-box;
+            flex-shrink: 0;
         }
         @media (min-width: 768px) {
             .testimonial-card {
-                flex: 0 0 calc(100% / 3);
+                width: 400px;
             }
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
         /* Video iframe styling */
         .video-iframe {
@@ -301,6 +311,18 @@
                     <div>
                         <p class="text-slate-400 font-semibold uppercase tracking-wider text-sm">Shipping</p>
                         <p class="text-lg font-bold text-white">Discreet, within 48 hours</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reviews / Social Proof Section -->
+        <section id="reviews" class="py-20 bg-slate-900/70">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-bold text-white text-center mb-12">Trusted by thousands for focus and clarity</h2>
+                <div class="overflow-hidden">
+                    <div id="testimonial-carousel" class="testimonial-carousel">
+                        <!-- Testimonials will be injected here by JS -->
                     </div>
                 </div>
             </div>
@@ -525,13 +547,6 @@
                             <p>Yes. Our product is formulated for safety and consistency. We always recommend responsible consumption. Please consult a healthcare professional if you have pre-existing conditions.</p>
                         </div>
                     </div>
-                    <div class="card-bg rounded-lg border border-slate-800">
-                        <button class="faq-question flex justify-between items-center w-full p-6 text-left font-semibold text-white" aria-expanded="false" aria-controls="faq4-answer">
-                            <span>Can I cancel my subscription anytime?</span>
-                            <svg class="faq-arrow w-5 h-5 shrink-0 transition-transform duration-200 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                        </button>
-                        <div id="faq4-answer" class="faq-answer hidden p-6 pt-0 text-slate-300">Absolutely. You can pause, modify, or cancel your subscription at any time through your online account portal, with no hidden fees or penalties.</div>
-                    </div>
                 </div>
             </div>
         </section>
@@ -626,6 +641,41 @@
 
             show(0);
             setInterval(() => show((index + 1) % videoData.length), 8000);
+        }
+
+        // --- Reviews Carousel ---
+        function initReviews() {
+            const reviews = [
+                { name: "Sarah M.", text: "This has completely replaced my morning coffee. Clean energy and zero anxiety." },
+                { name: "David K.", text: "The precision dosing is a game-changer. I know exactly what to expect every time." },
+                { name: "Elena R.", text: "Finally, a reliable way to enhance my focus without the stomach issues." },
+                { name: "Marcus T.", text: "Incredible clarity. The 2mg dose is the perfect sweet spot for my creative work." },
+                { name: "Jenny L.", text: "Discreet packaging and fast shipping. The product itself exceeded expectations." },
+                { name: "Sarah K.", text: "I was skeptical, but the trial sold me. It's exactly as described - a subtle lift that helps me stay present and productive all day." },
+                { name: "Mike D.", text: "The product is top-notch. Discreet shipping is a huge plus. My productivity has never been better." },
+                { name: "Jess R.", text: "A perfect tool for deep work sessions. It helps me get into a flow state much faster than coffee ever could." }
+            ];
+
+            const carousel = document.getElementById('testimonial-carousel');
+            if (!carousel) return;
+
+            function createCardHTML(r) {
+                return `
+                    <div class="testimonial-card">
+                        <div class="card-bg p-6 rounded-xl border border-slate-800 h-full flex flex-col justify-between">
+                            <div>
+                                <div class="text-sky-400 mb-4 text-xl">★★★★★</div>
+                                <p class="text-slate-300 italic mb-4">"${r.text}"</p>
+                            </div>
+                            <p class="text-white font-semibold">- ${r.name}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Duplicate the array to create a seamless infinite loop using CSS
+            const allReviews = [...reviews, ...reviews];
+            carousel.innerHTML = allReviews.map(createCardHTML).join('');
         }
 
         // --- Checkout & Logic ---
@@ -731,6 +781,7 @@
         }
 
         initVideoRotator();
+        initReviews(); // Initialize the reviews carousel
         initCheckout();
         initFaqAccordion();
     });
